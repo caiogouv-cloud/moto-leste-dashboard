@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Performance Operacional Moto Leste</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --picpay-green: #11C76F;
+      --picpay-green-dark: #0da65d;
+      --text-dark: #1D1E20;
+      --text-gray: #6B7076;
+      --bg-body: #F2F4F5;
+      --card-bg: #FFFFFF;
+      --danger: #E02B4C;
+    }
+
+    /* ====== AJUSTE VERTICAL (mantido) ====== */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 24px 16px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--text-dark);
+      font-weight: 700;
+      margin: 0 0 22px 0;
+      font-size: 1.6rem;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,.04);
+      padding: 18px;
+      margin-bottom: 16px;
+      border: 1px solid rgba(0,0,0,.03);
+    }
+
+    .card-header {
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .card-title { font-size: 1.05rem; font-weight: 600; }
+
+    .badge-tip {
+      background-color: #E8FAF2;
+      color: var(--picpay-green-dark);
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ====== TABELA (voltando ao "tema de antes") ====== */
+    .table-wrapper { overflow-x: auto; border-radius: 16px; }
+
+    /* Volta o comportamento original para você ver todos os meses (com rolagem horizontal) */
+    table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 1600px; }
+
+    th {
+      background-color: #FAFAFA;
+      color: var(--text-gray);
+      font-weight: 600;
+      font-size: 0.72rem;         /* compactado verticalmente, mas sem cortar colunas */
+      text-transform: uppercase;
+      padding: 10px 10px;         /* compactado */
+      border-bottom: 2px solid #EEE;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 10px 10px;         /* compactado */
+      border-bottom: 1px solid #F0F0F0;
+      font-size: 0.82rem;         /* compactado */
+      text-align: right;
+      white-space: nowrap;
+      color: var(--text-dark);
+      font-feature-settings: "tnum";
+    }
+
+    th:first-child, td:first-child {
+      text-align: left;
+      position: sticky;
+      left: 0;
+      background-color: var(--card-bg);
+      z-index: 10;
+      border-right: 2px solid #F0F0F0;
+      min-width: 170px;           /* levemente menor para caber melhor */
+      font-weight: 600;
+    }
+    th:first-child { background-color: #FAFAFA; }
+
+    /* Interatividade */
+    tr.interactive-row { cursor: pointer; transition: background 0.2s; }
+
+    tr.interactive-row:hover td {
+      background-color: #F0FCF6 !important;
+      color: var(--picpay-green-dark);
+    }
+
+    tr.active-row td {
+      background-color: #E8FAF2 !important;
+      color: var(--picpay-green-dark);
+      font-weight: 700;
+      border-bottom: 1px solid var(--picpay-green);
+    }
+    tr.active-row td:first-child { border-left: 4px solid var(--picpay-green); }
+
+    .text-negativo { color: var(--danger) !important; font-weight: 600; }
+    .text-positivo { color: var(--picpay-green-dark); }
+    .border-left { border-left: 2px solid #E0E0E0; }
+
+    /* ====== GRÁFICOS (mantido) ====== */
+    .charts-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+    @media (max-width: 1024px) { .charts-grid { grid-template-columns: 1fr; } }
+
+    .chart-box { height: 300px; position: relative; }
+    canvas { width: 100% !important; height: 100% !important; display: block; }
+
+    .status-dot {
+      height: 8px; width: 8px; background-color: var(--picpay-green);
+      border-radius: 50%; display: inline-block; margin-right: 8px;
+    }
+
+    .chart-fallback {
+      height: 100%;
+      display: grid;
+      place-items: center;
+      color: #6B7076;
+      background: #FAFAFA;
+      border-radius: 16px;
+      border: 1px dashed #E2E2E2;
+      padding: 18px;
+      text-align: center;
+      line-height: 1.35;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Performance Operacional Moto Leste</h1>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Detalhamento Financeiro</span>
+        <span class="badge-tip">👆 Clique nas linhas para analisar</span>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="financeTable">
+          <thead>
+            <tr>
+              <th>Indicador</th>
+              <th>mai/24</th><th>jun/24</th><th>jul/24</th><th>ago/24</th><th>set/24</th><th>out/24</th><th>nov/24</th><th>dez/24</th>
+              <th class="border-left">jan/25</th><th>fev/25</th><th>mar/25</th><th>abr/25</th><th>mai/25</th><th>jun/25</th>
+              <th>jul/25</th><th>ago/25</th><th>set/25</th><th>out/25</th><th>nov/25</th><th>dez/25</th>
+              <th style="background:#E8FAF2;color:#0da65d;">Total</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="interactive-row" data-label="Qtd Motos" data-format="int">
+              <td>Qtd Motos Locadas</td>
+              <td data-val="4">4</td><td data-val="10">10</td><td data-val="11">11</td><td data-val="11">11</td><td data-val="11">11</td><td data-val="11">11</td><td data-val="13">13</td><td data-val="13">13</td>
+              <td class="border-left" data-val="13">13</td><td data-val="13">13</td><td data-val="13">13</td><td data-val="17">17</td><td data-val="21">21</td><td data-val="26">26</td><td data-val="29">29</td><td data-val="38">38</td><td data-val="46">46</td><td data-val="50">50</td><td data-val="50">50</td><td data-val="50">50</td>
+              <td>-</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="Receita" data-format="currency" data-color="#11C76F">
+              <td>Receita</td>
+              <td data-val="5183">5183</td><td data-val="17620">17620</td><td data-val="20013">20013</td><td data-val="18641">18641</td><td data-val="22763">22763</td><td data-val="18113">18113</td><td data-val="12964">12964</td><td data-val="24871">24871</td>
+              <td class="border-left" data-val="22457">22457</td><td data-val="20807">20807</td><td data-val="20088">20088</td><td data-val="31555">31555</td><td data-val="35806">35806</td><td data-val="40641">40641</td><td data-val="57775">57775</td><td data-val="66713">66713</td><td data-val="84448">84448</td><td data-val="73442">73442</td><td data-val="64774">64774</td><td data-val="72316">72316</td>
+              <td data-val="730989">730989</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="Despesas Op." data-format="currency" data-color="#E02B4C">
+              <td>Despesas Op.</td>
+              <td data-val="5161">5161</td><td data-val="8706">8706</td><td data-val="13536">13536</td><td data-val="11736">11736</td><td data-val="13187">13187</td><td data-val="7800">7800</td><td data-val="6757">6757</td><td data-val="13544">13544</td>
+              <td class="border-left" data-val="13544">13544</td><td data-val="11359">11359</td><td data-val="11649">11649</td><td data-val="17939">17939</td><td data-val="20272">20272</td><td data-val="17950">17950</td><td data-val="35028">35028</td><td data-val="27551">27551</td><td data-val="30933">30933</td><td data-val="26456">26456</td><td data-val="31816">31816</td><td data-val="21055">21055</td>
+              <td data-val="345140">345140</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="Resultado Op." data-format="currency" data-color="#11C76F">
+              <td>Resultado Op.</td>
+              <td data-val="22">22</td><td data-val="8913">8913</td><td data-val="6477">6477</td><td data-val="6905">6905</td><td data-val="9576">9576</td><td data-val="10313">10313</td><td data-val="6207">6207</td><td data-val="11327">11327</td>
+              <td class="border-left" data-val="11327">11327</td><td data-val="9752">9752</td><td data-val="8440">8440</td><td data-val="13617">13617</td><td data-val="15533">15533</td><td data-val="22691">22691</td><td data-val="22747">22747</td><td data-val="39161">39161</td><td data-val="53515">53515</td><td data-val="46986">46986</td><td data-val="32958">32958</td><td data-val="51261">51261</td>
+              <td data-val="385849">385849</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="Margem Op." data-format="percent">
+              <td>Margem Operacional</td>
+              <td data-val="0">0</td><td data-val="51">51</td><td data-val="32">32</td><td data-val="37">37</td><td data-val="42">42</td><td data-val="57">57</td><td data-val="48">48</td><td data-val="46">46</td>
+              <td class="border-left" data-val="46">46</td><td data-val="43">43</td><td data-val="45">45</td><td data-val="42">42</td><td data-val="43">43</td><td data-val="56">56</td><td data-val="39">39</td><td data-val="59">59</td><td data-val="63">63</td><td data-val="64">64</td><td data-val="51">51</td><td data-val="71">71</td>
+              <td data-val="53">53</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="CAPEX" data-format="currency" data-color="#795548">
+              <td>CAPEX</td>
+              <td data-val="15500">15500</td><td data-val="32740">32740</td><td data-val="23865">23865</td><td data-val="17334">17334</td><td data-val="14934">14934</td><td data-val="17304">17304</td><td data-val="35809">35809</td><td data-val="25468">25468</td>
+              <td class="border-left" data-val="14865">14865</td><td data-val="14865">14865</td><td data-val="150785">150785</td><td data-val="4440">4440</td><td data-val="197012">197012</td><td data-val="6062">6062</td><td data-val="28068">28068</td><td data-val="29066">29066</td><td data-val="37512">37512</td><td data-val="37512">37512</td><td data-val="38810">38810</td><td data-val="60157">60157</td>
+              <td data-val="802107">802107</td>
+            </tr>
+
+            <tr class="interactive-row" data-label="Resultado Financeiro" data-format="currency" data-color="#E67E22">
+              <td>Resultado Financeiro</td>
+              <td data-val="-15478">-15478</td><td data-val="-23934">-23934</td><td data-val="-17820">-17820</td><td data-val="-10959">-10959</td><td data-val="-5969">-5969</td><td data-val="-7759">-7759</td><td data-val="-30349">-30349</td><td data-val="-14614">-14614</td>
+              <td class="border-left" data-val="-14614">-14614</td><td data-val="-5818">-5818</td><td data-val="-6206">-6206</td><td data-val="-143144">-143144</td><td data-val="8529">8529</td><td data-val="-182245">-182245</td><td data-val="15708">15708</td><td data-val="-6545">-6545</td><td data-val="8243">8243</td><td data-val="12934">12934</td><td data-val="6928">6928</td><td data-val="-8513">-8513</td>
+              <td data-val="-443830">-443830</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><span class="status-dot"></span>Evolução Mensal</span>
+        </div>
+        <div class="chart-box" id="trendBox">
+          <canvas id="trendChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card" id="yoyCard">
+        <div class="card-header">
+          <span class="card-title">Comparação Ano x Ano (%)</span>
+        </div>
+        <div class="chart-box" id="yoyBox">
+          <canvas id="yoyChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- Helpers ----------
+    const labelsFull = [
+      'Mai/24','Jun/24','Jul/24','Ago/24','Set/24','Out/24','Nov/24','Dez/24',
+      'Jan/25','Fev/25','Mar/25','Abr/25','Mai/25','Jun/25','Jul/25','Ago/25','Set/25','Out/25','Nov/25','Dez/25'
+    ];
+
+    function formatMoney(v) {
+      return Number(v).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      });
+    }
+
+    function formatByType(v, format) {
+      if (format === 'currency') return formatMoney(v);
+      if (format === 'percent') return `${Number(v).toFixed(0)}%`;
+      if (format === 'int') return `${Number(v).toFixed(0)}`;
+      return `${v}`;
+    }
+
+    function getRowData(row) {
+      const cells = row.querySelectorAll('td');
+      const data = [];
+      for (let i = 1; i <= 20; i++) {
+        const raw = cells[i]?.getAttribute('data-val');
+        const val = parseFloat(raw);
+        data.push(Number.isFinite(val) ? val : 0);
+      }
+      return data;
+    }
+
+    // ✅ YoY SEM MAIO (Jun..Dez apenas)
+    function calculateYoY(data) {
+      const labels = ['Jun','Jul','Ago','Set','Out','Nov','Dez'];
+      const values = [];
+      const colors = [];
+
+      for (let i = 1; i <= 7; i++) { // 1..7 = Jun..Dez
+        const val24 = data[i];
+        const val25 = data[i + 12];
+
+        if (val24 !== 0) {
+          const pct = ((val25 - val24) / Math.abs(val24)) * 100;
+          values.push(pct);
+          colors.push(pct >= 0 ? '#11C76F' : '#E02B4C');
+        } else {
+          values.push(0);
+          colors.push('#ccc');
+        }
+      }
+      return { labels, values, colors };
+    }
+
+    // ---------- Charts ----------
+    let chartTrend = null;
+    let chartYoY = null;
+
+    function showChartFallback() {
+      const trendBox = document.getElementById('trendBox');
+      const yoyBox = document.getElementById('yoyBox');
+      trendBox.innerHTML = `<div class="chart-fallback">
+        Não consegui carregar o Chart.js (biblioteca do gráfico).<br/>
+        Isso acontece quando a rede/ambiente bloqueia o CDN.<br/><br/>
+        A tabela continuará formatando normalmente.
+      </div>`;
+      yoyBox.innerHTML = `<div class="chart-fallback">
+        Gráfico indisponível (Chart.js não carregou).
+      </div>`;
+    }
+
+    function updateCharts(label, data, color, format) {
+      if (typeof Chart === 'undefined') {
+        showChartFallback();
+        return;
+      }
+
+      Chart.defaults.font.family = "'Inter', sans-serif";
+      Chart.defaults.color = '#6B7076';
+
+      const ctxTrend = document.getElementById('trendChart').getContext('2d');
+      const ctxYoY = document.getElementById('yoyChart').getContext('2d');
+
+      if (chartTrend) chartTrend.destroy();
+
+      const gradient = ctxTrend.createLinearGradient(0, 0, 0, 300);
+      gradient.addColorStop(0, color + '66');
+      gradient.addColorStop(1, color + '00');
+
+      chartTrend = new Chart(ctxTrend, {
+        type: 'line',
+        data: {
+          labels: labelsFull,
+          datasets: [{
+            label,
+            data,
+            borderColor: color,
+            backgroundColor: gradient,
+            borderWidth: 3,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: color,
+            pointRadius: 4,
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: '#1D1E20',
+              padding: 12,
+              callbacks: {
+                label: (ctx) => `${label}: ${formatByType(ctx.raw, format)}`
+              }
+            }
+          },
+          scales: {
+            y: {
+              grid: { display: true, color: '#e9ecef', borderDash: [5, 5] },
+              ticks: {
+                callback: (value) => {
+                  if (format === 'currency') return formatMoney(value);
+                  if (format === 'percent') return value + '%';
+                  return value;
+                }
+              }
+            },
+            x: {
+              grid: { display: true, color: '#f0f0f0' } // ✅ grid vertical
+            }
+          }
+        }
+      });
+
+      // YoY faz sentido pra currency/int; para percent fica confuso (variação do %)
+      const yoyCard = document.getElementById('yoyCard');
+      const shouldShowYoY = (format === 'currency' || format === 'int');
+      yoyCard.style.display = shouldShowYoY ? '' : 'none';
+
+      if (!shouldShowYoY) {
+        if (chartYoY) chartYoY.destroy();
+        chartYoY = null;
+        return;
+      }
+
+      const yoyData = calculateYoY(data);
+      if (chartYoY) chartYoY.destroy();
+
+      chartYoY = new Chart(ctxYoY, {
+        type: 'bar',
+        data: {
+          labels: yoyData.labels,
+          datasets: [{
+            label: 'Variação',
+            data: yoyData.values,
+            backgroundColor: yoyData.colors,
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.raw.toFixed(1)}% vs Ano Anterior`
+              }
+            }
+          },
+          scales: {
+            y: {
+              grid: { display: true, color: '#e9ecef' },
+              ticks: { callback: (v) => v + '%' }
+            },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    // ---------- Init ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      const rows = document.querySelectorAll('.interactive-row');
+
+      // 1) Formata tabela (mantendo valores completos)
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const format = row.dataset.format;
+
+        for (let i = 1; i < cells.length; i++) {
+          const raw = cells[i].getAttribute('data-val');
+          const val = parseFloat(raw);
+
+          if (!Number.isFinite(val)) continue;
+
+          if (format === 'currency') {
+            cells[i].innerText = formatMoney(val);
+            cells[i].classList.add(val < 0 ? 'text-negativo' : 'text-positivo');
+          } else if (format === 'percent') {
+            cells[i].innerText = val + '%';
+          } else if (format === 'int') {
+            cells[i].innerText = String(Math.round(val));
+          }
+        }
+      });
+
+      // 2) Clique: atualiza estado + gráficos
+      rows.forEach(row => {
+        row.addEventListener('click', () => {
+          rows.forEach(r => r.classList.remove('active-row'));
+          row.classList.add('active-row');
+
+          const label = row.dataset.label || row.querySelector('td')?.innerText || 'Indicador';
+          const color = row.dataset.color || '#11C76F';
+          const format = row.dataset.format || 'currency';
+          const data = getRowData(row);
+
+          updateCharts(label, data, color, format);
+        });
+      });
+
+      // 3) Auto-clique Receita (ou primeira linha)
+      const receita = document.querySelector('tr[data-label="Receita"]');
+      (receita || rows[0])?.click();
+    });
+  </script>
+</body>
+</html>
