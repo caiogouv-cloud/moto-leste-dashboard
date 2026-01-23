@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Simulador para Investidores Motoleste</title>
+
+  <style>
+    :root{
+      --bg:#0b0f14;
+      --card:#111823;
+      --muted:#8aa0b5;
+      --text:#e9f0f7;
+      --line:rgba(255,255,255,.08);
+      --good:#4ade80;
+      --bad:#fb7185;
+      --accent:#60a5fa;
+      --input-bg: rgba(255,255,255,.03);
+      --input-hover: rgba(96,165,250,.10);
+      --input-border-hover: rgba(96,165,250,.35);
+      --input-border-focus: rgba(96,165,250,.65);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
+      background: radial-gradient(1200px 800px at 20% 0%, rgba(96,165,250,.12), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 20%, rgba(74,222,128,.10), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      padding:28px;
+    }
+    .wrap{max-width:1180px;margin:0 auto}
+    header{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    h1{font-size:22px;margin:0}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{
+      border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:13px;
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      user-select:none;
+    }
+    .btn:hover{border-color: rgba(96,165,250,.35); box-shadow: 0 0 0 3px rgba(96,165,250,.10);}
+    .btn:active{transform: translateY(1px);}
+
+    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:14px;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.04), transparent 50%), var(--card);
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .card h2{
+      font-size:14px;
+      margin:0 0 12px 0;
+      color:#cfe2f5;
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      flex-wrap:wrap;
+    }
+    .hint{color:var(--muted);font-size:12px}
+
+    .scenario-bar{
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      margin-bottom:12px;
+    }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:12px;
+      transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+      user-select:none;
+    }
+    .chip:hover{border-color: rgba(96,165,250,.35); box-shadow: 0 0 0 3px rgba(96,165,250,.10);}
+    .chip:active{transform: translateY(1px);}
+
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 560px){ .form{grid-template-columns:1fr} }
+
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .field{display:flex;flex-direction:column;gap:6px}
+
+    /* Hover/focus effects on inputs */
+    input{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid var(--line);
+      background: var(--input-bg);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+      transition: background .14s ease, border-color .14s ease, box-shadow .14s ease;
+    }
+    input:hover{
+      background: var(--input-hover);
+      border-color: var(--input-border-hover);
+    }
+    input:focus{
+      border-color: var(--input-border-focus);
+      box-shadow: 0 0 0 4px rgba(96,165,250,.14);
+      background: rgba(96,165,250,.12);
+    }
+
+    details{
+      margin-top:10px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      overflow:hidden;
+      background: rgba(255,255,255,.02);
+    }
+    summary{
+      cursor:pointer;
+      padding:10px 12px;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      font-size:13px;
+      color:#d7e8f8;
+    }
+    summary::-webkit-details-marker{display:none}
+    .details-body{padding:12px;border-top:1px solid var(--line)}
+
+    .kpis{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    @media (max-width: 560px){ .kpis{grid-template-columns:1fr} }
+
+    .kpi{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background: rgba(255,255,255,.02);
+    }
+    .kpi .t{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .kpi .v{font-size:18px;font-weight:650}
+    .kpi .s{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.3}
+
+    .good{color:var(--good)}
+    .accent{color:var(--accent)}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .footer-note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .toast{
+      position:fixed;
+      right:18px; bottom:18px;
+      background: rgba(17,24,35,.92);
+      border: 1px solid var(--line);
+      color: var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.45);
+      font-size:13px;
+      opacity:0;
+      transform: translateY(8px);
+      transition: all .18s ease;
+      pointer-events:none;
+    }
+    .toast.show{opacity:1; transform: translateY(0);}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Simulador para Investidores Motoleste</h1>
+      <div class="btnrow">
+        <button class="btn" id="copyBtn">Copiar resumo (WhatsApp)</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- LEFT: Inputs -->
+      <section class="card">
+        <h2>
+          Inputs
+          <span class="hint">Cenários preenchem parâmetros; você pode ajustar depois.</span>
+        </h2>
+
+        <div class="scenario-bar">
+          <span class="hint" style="margin-right:4px">Cenários:</span>
+          <button class="chip" id="scConservador">Conservador</button>
+          <button class="chip" id="scBase">Base</button>
+          <button class="chip" id="scAgressivo">Agressivo</button>
+        </div>
+
+        <div class="form">
+          <div class="field">
+            <label for="pctCotas">% das cotas</label>
+            <input id="pctCotas" type="number" min="0" max="100" step="0.01" value="33">
+          </div>
+
+          <div class="field">
+            <label for="qtdMotos">Qtd de motos (atual)</label>
+            <input id="qtdMotos" type="number" min="0" step="1" value="50">
+          </div>
+
+          <div class="field">
+            <label for="lucroMoto">Lucro por moto projetado (R$/mês)</label>
+            <input id="lucroMoto" type="number" min="0" step="50" value="500">
+          </div>
+
+          <div class="field">
+            <label for="cagr">CAGR de motos (ao ano, %)</label>
+            <input id="cagr" type="number" min="-100" step="0.01" value="15">
+          </div>
+
+          <div class="field">
+            <label for="multiplo">Múltiplo de valuation (x)</label>
+            <input id="multiplo" type="number" min="0" step="0.1" value="6">
+          </div>
+
+          <div class="field">
+            <label for="pctDividendos">% de distribuição de dividendos</label>
+            <input id="pctDividendos" type="number" min="0" max="100" step="0.01" value="50">
+          </div>
+        </div>
+
+        <details>
+          <summary>
+            <span>Premissas</span>
+            <span class="hint">clique para abrir</span>
+          </summary>
+          <div class="details-body">
+            <div class="form">
+              <div class="field" style="grid-column: 1 / -1;">
+                <label for="anos">Horizonte (anos) para projeção futura</label>
+                <input id="anos" type="number" min="1" step="1" value="5">
+              </div>
+            </div>
+
+            <div class="footer-note">
+              <div><b>Qtd motos futura</b> = qtd_motos × (1 + CAGR)^anos</div>
+              <div><b>Base anual</b> = lucro_moto_mensal × qtd_motos × 12</div>
+              <div><b>Dividendos anuais</b> = base_anual × %dividendos × %cotas</div>
+              <div><b>Valuation</b> = base_anual × múltiplo</div>
+              <div><b>Valor cotas</b> = valuation × %cotas</div>
+              <div><b>ROE</b> = dividendos anuais ÷ valor das cotas atuais</div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- RIGHT: Outputs -->
+      <section class="card">
+        <h2>Outputs</h2>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Dividendos (mês) — hoje</div>
+            <div class="v good" id="dividendoMensal">—</div>
+            <div class="s"><span class="mono">dividendo anual / 12</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Dividendos (ano) — hoje</div>
+            <div class="v good" id="dividendoAnual">—</div>
+            <div class="s"><span class="mono">base_anual × %div × %cotas</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Valuation (hoje)</div>
+            <div class="v accent" id="valuation">—</div>
+            <div class="s"><span class="mono">base_anual × múltiplo</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Valor das cotas atuais</div>
+            <div class="v" id="cotasAtuais">—</div>
+            <div class="s"><span class="mono">valuation × %cotas</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">ROE (ano)</div>
+            <div class="v" id="roe">—</div>
+            <div class="s"><span class="mono">dividendo anual ÷ valor cotas atuais</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Qtd motos futura</div>
+            <div class="v" id="motosFuturo">—</div>
+            <div class="s"><span class="mono">qtd × (1+CAGR)^anos</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Dividendos (mês) — futuro</div>
+            <div class="v good" id="dividendoMensalFuturo">—</div>
+            <div class="s"><span class="mono">dividendo anual futuro / 12</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Dividendos (ano) — futuro</div>
+            <div class="v good" id="dividendoAnualFuturo">—</div>
+            <div class="s"><span class="mono">base_anual_futura × %div × %cotas</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Valuation futuro</div>
+            <div class="v accent" id="valuationFuturo">—</div>
+            <div class="s"><span class="mono">base_anual_futura × múltiplo</span></div>
+          </div>
+
+          <div class="kpi">
+            <div class="t">Valor das cotas futuro</div>
+            <div class="v" id="cotasFuturo">—</div>
+            <div class="s"><span class="mono">valuation_futuro × %cotas</span></div>
+          </div>
+        </div>
+
+        <div class="footer-note" id="alerta"></div>
+      </section>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copiado ✅</div>
+
+  <script>
+    const el = (id) => document.getElementById(id);
+
+    function fmtBRL(n){
+      if (!isFinite(n)) return "—";
+      return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
+    }
+    function fmtPctFromRatio(r){
+      if (!isFinite(r)) return "—";
+      return (r*100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
+    }
+    function clamp(v, min, max){
+      if (!isFinite(v)) return min;
+      return Math.min(Math.max(v, min), max);
+    }
+    function toNumber(v, fallback=0){
+      const n = parseFloat(v);
+      return isFinite(n) ? n : fallback;
+    }
+
+    // Como removemos o toggle, assumimos lucro por moto MENSAL.
+    function baseAnual(lucroMotoMensal, qtdMotos){
+      return lucroMotoMensal * qtdMotos * 12;
+    }
+
+    function qtdMotosNoAno(qtdAtual, cagrAno, t){
+      return qtdAtual * Math.pow(1 + cagrAno, t);
+    }
+
+    function computeAtT(inputs, t){
+      const { pctCotas, qtdMotos, lucroMoto, cagr, multiplo, pctDividendos } = inputs;
+
+      const motos = qtdMotosNoAno(qtdMotos, cagr, t);
+      const base = baseAnual(lucroMoto, motos);
+
+      const dividendosAnuais = base * pctDividendos * pctCotas;
+      const dividendosMensais = dividendosAnuais / 12;
+
+      const valuation = base * multiplo;
+      const valorCotas = valuation * pctCotas;
+
+      return { motos, base, dividendosAnuais, dividendosMensais, valuation, valorCotas };
+    }
+
+    function readInputs(){
+      const pctCotas = clamp(toNumber(el("pctCotas").value, 0), 0, 100) / 100;
+      const qtdMotos = Math.max(parseInt(el("qtdMotos").value || 0, 10), 0);
+      const lucroMoto = Math.max(toNumber(el("lucroMoto").value, 0), 0); // mensal
+      const cagr = toNumber(el("cagr").value, 0) / 100; // CAGR de motos
+      const multiplo = Math.max(toNumber(el("multiplo").value, 0), 0);
+      const pctDividendos = clamp(toNumber(el("pctDividendos").value, 0), 0, 100) / 100;
+      const anos = Math.max(parseInt(el("anos").value || 1, 10), 1);
+
+      return { pctCotas, qtdMotos, lucroMoto, cagr, multiplo, pctDividendos, anos };
+    }
+
+    function calc(){
+      const inputs = readInputs();
+
+      const hoje = computeAtT(inputs, 0);
+      const futuro = computeAtT(inputs, inputs.anos);
+
+      // ROE = dividendos anuais / valor cotas atuais (hoje)
+      const roe = (hoje.valorCotas > 0) ? (hoje.dividendosAnuais / hoje.valorCotas) : NaN;
+
+      el("dividendoMensal").textContent = fmtBRL(hoje.dividendosMensais);
+      el("dividendoAnual").textContent = fmtBRL(hoje.dividendosAnuais);
+
+      el("valuation").textContent = fmtBRL(hoje.valuation);
+      el("cotasAtuais").textContent = fmtBRL(hoje.valorCotas);
+
+      el("roe").textContent = isFinite(roe) ? fmtPctFromRatio(roe) : "—";
+
+      el("motosFuturo").textContent = isFinite(futuro.motos) ? futuro.motos.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) : "—";
+
+      el("dividendoMensalFuturo").textContent = fmtBRL(futuro.dividendosMensais);
+      el("dividendoAnualFuturo").textContent = fmtBRL(futuro.dividendosAnuais);
+
+      el("valuationFuturo").textContent = fmtBRL(futuro.valuation);
+      el("cotasFuturo").textContent = fmtBRL(futuro.valorCotas);
+
+      // Alertas simples
+      const avisos = [];
+      if (inputs.qtdMotos === 0) avisos.push("⚠️ Qtd de motos está 0; outputs ficam zerados.");
+      if (inputs.lucroMoto === 0) avisos.push("⚠️ Lucro por moto está 0; valuation/dividendos ficam zerados.");
+      if (inputs.multiplo === 0) avisos.push("⚠️ Múltiplo está 0; valuation fica 0.");
+      if (inputs.pctCotas === 0) avisos.push("ℹ️ % cotas está 0; participação e dividendos do sócio ficam 0.");
+      if (inputs.pctDividendos === 0) avisos.push("ℹ️ % dividendos está 0; projeções de dividendos ficam 0.");
+      if ((1 + inputs.cagr) <= 0) avisos.push("⚠️ CAGR <= -100% torna a projeção futura inválida.");
+
+      el("alerta").textContent = avisos.join(" ");
+    }
+
+    // Cenários (ajuste livre)
+    const scenarios = {
+      conservador: { cagr: 5, multiplo: 4.5, pctDividendos: 60 },
+      base:        { cagr: 15, multiplo: 6.0, pctDividendos: 50 },
+      agressivo:   { cagr: 30, multiplo: 7.5, pctDividendos: 40 }
+    };
+
+    function showToast(msg){
+      const t = el("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(()=> t.classList.remove("show"), 1600);
+    }
+
+    function applyScenario(s){
+      el("cagr").value = s.cagr;
+      el("multiplo").value = s.multiplo;
+      el("pctDividendos").value = s.pctDividendos;
+      calc();
+      showToast(`Cenário aplicado: ${s.cagr}% CAGR`);
+    }
+
+    function buildSummary(){
+      const inputs = readInputs();
+
+      const hoje = computeAtT(inputs, 0);
+      const futuro = computeAtT(inputs, inputs.anos);
+      const roe = (hoje.valorCotas > 0) ? (hoje.dividendosAnuais / hoje.valorCotas) : NaN;
+
+      const pctCotasPct = (inputs.pctCotas*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+      const pctDivPct = (inputs.pctDividendos*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+      const cagrPct = (inputs.cagr*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+
+      const lines = [
+        "*Simulador para Investidores Motoleste*",
+        "",
+        `• % cotas: *${pctCotasPct}%*`,
+        `• Qtd motos (atual): *${inputs.qtdMotos}*`,
+        `• Lucro por moto (mensal): *${fmtBRL(inputs.lucroMoto)}*`,
+        `• CAGR motos: *${cagrPct}% a.a.*`,
+        `• Múltiplo: *${inputs.multiplo}x*`,
+        `• % dividendos: *${pctDivPct}%*`,
+        `• Horizonte: *${inputs.anos} anos*`,
+        "",
+        `*Hoje (Ano 0)*`,
+        `• Dividendos (mês): *${fmtBRL(hoje.dividendosMensais)}*`,
+        `• Dividendos (ano): *${fmtBRL(hoje.dividendosAnuais)}*`,
+        `• Valuation: *${fmtBRL(hoje.valuation)}*`,
+        `• Valor cotas atuais: *${fmtBRL(hoje.valorCotas)}*`,
+        `• ROE: *${isFinite(roe) ? fmtPctFromRatio(roe) : "—"}*`,
+        "",
+        `*Futuro (Ano ${inputs.anos})*`,
+        `• Qtd motos futura: *${futuro.motos.toLocaleString("pt-BR",{maximumFractionDigits:2})}*`,
+        `• Dividendos (mês): *${fmtBRL(futuro.dividendosMensais)}*`,
+        `• Dividendos (ano): *${fmtBRL(futuro.dividendosAnuais)}*`,
+        `• Valuation futuro: *${fmtBRL(futuro.valuation)}*`,
+        `• Valor cotas futuro: *${fmtBRL(futuro.valorCotas)}*`
+      ];
+      return lines.join("\n");
+    }
+
+    async function copySummary(){
+      const text = buildSummary();
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Copiado ✅");
+      } catch(e){
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast("Copiado ✅");
+      }
+    }
+
+    // listeners
+    ["pctCotas","qtdMotos","lucroMoto","cagr","multiplo","pctDividendos","anos"].forEach(id=>{
+      el(id).addEventListener("input", calc);
+      el(id).addEventListener("change", calc);
+    });
+
+    el("copyBtn").addEventListener("click", copySummary);
+
+    el("scConservador").addEventListener("click", ()=>applyScenario(scenarios.conservador));
+    el("scBase").addEventListener("click", ()=>applyScenario(scenarios.base));
+    el("scAgressivo").addEventListener("click", ()=>applyScenario(scenarios.agressivo));
+
+    // init
+    calc();
+  </script>
+</body>
+</html>
