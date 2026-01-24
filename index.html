@@ -13,23 +13,27 @@
       --text:#e9f0f7;
       --line:rgba(255,255,255,.08);
       --good:#4ade80;
-      --bad:#fb7185;
       --accent:#60a5fa;
+      --warn:#fbbf24;
+
       --input-bg: rgba(255,255,255,.03);
       --input-hover: rgba(96,165,250,.10);
       --input-border-hover: rgba(96,165,250,.35);
       --input-border-focus: rgba(96,165,250,.65);
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue";
-      background: radial-gradient(1200px 800px at 20% 0%, rgba(96,165,250,.12), transparent 60%),
-                  radial-gradient(1000px 700px at 80% 20%, rgba(74,222,128,.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 20% 0%, rgba(96,165,250,.12), transparent 60%),
+        radial-gradient(1000px 700px at 80% 20%, rgba(74,222,128,.10), transparent 55%),
+        var(--bg);
       color:var(--text);
       padding:28px;
     }
+
     .wrap{max-width:1180px;margin:0 auto}
     header{
       display:flex;
@@ -55,8 +59,7 @@
     .btn:hover{border-color: rgba(96,165,250,.35); box-shadow: 0 0 0 3px rgba(96,165,250,.10);}
     .btn:active{transform: translateY(1px);}
 
-    .grid{display:grid;grid-template-columns: 1.15fr .85fr;gap:14px;}
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr} }
+    .grid{display:grid;grid-template-columns: 1fr;gap:14px;}
 
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.04), transparent 50%), var(--card);
@@ -65,44 +68,34 @@
       padding:16px;
       box-shadow: 0 10px 30px rgba(0,0,0,.35);
     }
+
     .card h2{
       font-size:14px;
       margin:0 0 12px 0;
       color:#cfe2f5;
-      display:flex;align-items:center;justify-content:space-between;gap:10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
       flex-wrap:wrap;
     }
-    .hint{color:var(--muted);font-size:12px}
 
-    .scenario-bar{
-      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
-      margin-bottom:12px;
-    }
-    .chip{
-      border:1px solid var(--line);
-      background: rgba(255,255,255,.02);
-      color: var(--text);
-      padding:8px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:12px;
-      transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
-      user-select:none;
-    }
-    .chip:hover{border-color: rgba(96,165,250,.35); box-shadow: 0 0 0 3px rgba(96,165,250,.10);}
-    .chip:active{transform: translateY(1px);}
+    .hint{color:var(--muted);font-size:12px}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+    .accent{color:var(--accent)}
+    .good{color:var(--good)}
+    .warn{color:var(--warn)}
 
     .form{
       display:grid;
       grid-template-columns: 1fr 1fr;
       gap:12px;
     }
-    @media (max-width: 560px){ .form{grid-template-columns:1fr} }
+    @media (max-width: 680px){ .form{grid-template-columns:1fr} }
 
     label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
     .field{display:flex;flex-direction:column;gap:6px}
 
-    /* Hover/focus effects on inputs */
     input{
       width:100%;
       padding:10px 10px;
@@ -123,6 +116,32 @@
       box-shadow: 0 0 0 4px rgba(96,165,250,.14);
       background: rgba(96,165,250,.12);
     }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background: rgba(255,255,255,.02);
+      margin-top:10px;
+      font-size:13px;
+    }
+    th, td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      text-align:left;
+      vertical-align:middle;
+    }
+    th{
+      color:#cfe2f5;
+      font-weight:600;
+      font-size:12px;
+      background: rgba(255,255,255,.03);
+    }
+    tr:last-child td{border-bottom:none}
+    .right{text-align:right}
 
     details{
       margin-top:10px;
@@ -146,10 +165,12 @@
 
     .kpis{
       display:grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
       gap:12px;
+      margin-top:10px;
     }
-    @media (max-width: 560px){ .kpis{grid-template-columns:1fr} }
+    @media (max-width: 980px){ .kpis{grid-template-columns: 1fr 1fr} }
+    @media (max-width: 560px){ .kpis{grid-template-columns: 1fr} }
 
     .kpi{
       border:1px solid var(--line);
@@ -161,14 +182,16 @@
     .kpi .v{font-size:18px;font-weight:650}
     .kpi .s{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.3}
 
-    .good{color:var(--good)}
-    .accent{color:var(--accent)}
-    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
-    .footer-note{
-      margin-top:12px;
+    .note{
+      margin-top:10px;
       color:var(--muted);
       font-size:12px;
       line-height:1.35;
+    }
+
+    .section-sep{
+      height:1px;background:rgba(255,255,255,.06);
+      margin:12px 0 2px 0;
     }
 
     .toast{
@@ -200,39 +223,50 @@
     </header>
 
     <div class="grid">
-      <!-- LEFT: Inputs -->
-      <section class="card">
+
+      <!-- 1) CAP TABLE ATUAL -->
+      <section class="card" id="secCapAtual">
         <h2>
-          Inputs
-          <span class="hint">Cenários preenchem parâmetros; você pode ajustar depois.</span>
+          1) Cap Table Atual
+          <span class="hint">Base fixa (pré-rodada)</span>
         </h2>
 
-        <div class="scenario-bar">
-          <span class="hint" style="margin-right:4px">Cenários:</span>
-          <button class="chip" id="scConservador">Conservador</button>
-          <button class="chip" id="scBase">Base</button>
-          <button class="chip" id="scAgressivo">Agressivo</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Sócio</th>
+              <th class="right">% de cotas</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Gouveia SA</td><td class="right">33,00%</td></tr>
+            <tr><td>Cenni SA</td><td class="right">33,00%</td></tr>
+            <tr><td>Casarini SA</td><td class="right">17,00%</td></tr>
+            <tr><td>Cheni SA</td><td class="right">17,00%</td></tr>
+          </tbody>
+        </table>
+
+        <div class="note">
+          Na rodada, os novos investidores compram <b>equity total</b> via aporte (diluição pró-rata dos atuais).
         </div>
+      </section>
+
+      <!-- 2) MÉTRICAS ATUAIS -->
+      <section class="card" id="secMetricas">
+        <h2>
+          2) Métricas atuais
+          <span class="hint">Premissas para valuation e projeções</span>
+        </h2>
 
         <div class="form">
-          <div class="field">
-            <label for="pctCotas">% das cotas</label>
-            <input id="pctCotas" type="number" min="0" max="100" step="0.01" value="33">
-          </div>
-
           <div class="field">
             <label for="qtdMotos">Qtd de motos (atual)</label>
             <input id="qtdMotos" type="number" min="0" step="1" value="50">
           </div>
 
           <div class="field">
-            <label for="lucroMoto">Lucro por moto projetado (R$/mês)</label>
-            <input id="lucroMoto" type="number" min="0" step="50" value="500">
-          </div>
-
-          <div class="field">
-            <label for="cagr">CAGR de motos (ao ano, %)</label>
-            <input id="cagr" type="number" min="-100" step="0.01" value="15">
+            <label for="ebitdaMoto">EBITDA por moto (atual) — R$/mês</label>
+            <input id="ebitdaMoto" type="number" min="0" step="50" value="500">
           </div>
 
           <div class="field">
@@ -241,120 +275,235 @@
           </div>
 
           <div class="field">
-            <label for="pctDividendos">% de distribuição de dividendos</label>
-            <input id="pctDividendos" type="number" min="0" max="100" step="0.01" value="50">
+            <label for="cagr">CAGR de motos (ao ano, %)</label>
+            <input id="cagr" type="number" min="-100" step="0.01" value="15">
           </div>
         </div>
-
-        <details>
-          <summary>
-            <span>Premissas</span>
-            <span class="hint">clique para abrir</span>
-          </summary>
-          <div class="details-body">
-            <div class="form">
-              <div class="field" style="grid-column: 1 / -1;">
-                <label for="anos">Horizonte (anos) para projeção futura</label>
-                <input id="anos" type="number" min="1" step="1" value="5">
-              </div>
-            </div>
-
-            <div class="footer-note">
-              <div><b>Qtd motos futura</b> = qtd_motos × (1 + CAGR)^anos</div>
-              <div><b>Base anual</b> = lucro_moto_mensal × qtd_motos × 12</div>
-              <div><b>Dividendos anuais</b> = base_anual × %dividendos × %cotas</div>
-              <div><b>Valuation</b> = base_anual × múltiplo</div>
-              <div><b>Valor cotas</b> = valuation × %cotas</div>
-              <div><b>ROE</b> = dividendos anuais ÷ valor das cotas atuais</div>
-            </div>
-          </div>
-        </details>
-      </section>
-
-      <!-- RIGHT: Outputs -->
-      <section class="card">
-        <h2>Outputs</h2>
 
         <div class="kpis">
           <div class="kpi">
-            <div class="t">Dividendos (mês) — hoje</div>
-            <div class="v good" id="dividendoMensal">—</div>
-            <div class="s"><span class="mono">dividendo anual / 12</span></div>
+            <div class="t">EBITDA mensal total (hoje)</div>
+            <div class="v" id="kpiEbitdaMensal">—</div>
+            <div class="s mono">motos × ebitda_moto_mensal</div>
+          </div>
+          <div class="kpi">
+            <div class="t">EBITDA anual total (hoje)</div>
+            <div class="v" id="kpiEbitdaAnual">—</div>
+            <div class="s mono">ebitda_mensal × 12</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Valuation pré-money (hoje)</div>
+            <div class="v accent" id="kpiPreMoney">—</div>
+            <div class="s mono">ebitda_anual × múltiplo</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Valuation pós-money (com rodada)</div>
+            <div class="v accent" id="kpiPostMoney">—</div>
+            <div class="s mono">pré-money + aportes</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3) RODADA DE INVESTIMENTO -->
+      <section class="card" id="secRodada">
+        <h2>
+          3) Rodada de investimento
+          <span class="hint">Até 5 novos investidores</span>
+        </h2>
+
+        <div class="form">
+          <div class="field">
+            <label for="inv1Nome">Nome do novo investidor 1</label>
+            <input id="inv1Nome" type="text" value="Investidor 1">
+          </div>
+          <div class="field">
+            <label for="inv1Valor">Valor do investimento 1 (R$)</label>
+            <input id="inv1Valor" type="number" min="0" step="1000" value="100000">
           </div>
 
-          <div class="kpi">
-            <div class="t">Dividendos (ano) — hoje</div>
-            <div class="v good" id="dividendoAnual">—</div>
-            <div class="s"><span class="mono">base_anual × %div × %cotas</span></div>
+          <div class="field">
+            <label for="inv2Nome">Nome do novo investidor 2</label>
+            <input id="inv2Nome" type="text" value="">
+          </div>
+          <div class="field">
+            <label for="inv2Valor">Valor do investimento 2 (R$)</label>
+            <input id="inv2Valor" type="number" min="0" step="1000" value="0">
           </div>
 
-          <div class="kpi">
-            <div class="t">Valuation (hoje)</div>
-            <div class="v accent" id="valuation">—</div>
-            <div class="s"><span class="mono">base_anual × múltiplo</span></div>
+          <div class="field">
+            <label for="inv3Nome">Nome do novo investidor 3</label>
+            <input id="inv3Nome" type="text" value="">
+          </div>
+          <div class="field">
+            <label for="inv3Valor">Valor do investimento 3 (R$)</label>
+            <input id="inv3Valor" type="number" min="0" step="1000" value="0">
           </div>
 
-          <div class="kpi">
-            <div class="t">Valor das cotas atuais</div>
-            <div class="v" id="cotasAtuais">—</div>
-            <div class="s"><span class="mono">valuation × %cotas</span></div>
+          <div class="field">
+            <label for="inv4Nome">Nome do novo investidor 4</label>
+            <input id="inv4Nome" type="text" value="">
+          </div>
+          <div class="field">
+            <label for="inv4Valor">Valor do investimento 4 (R$)</label>
+            <input id="inv4Valor" type="number" min="0" step="1000" value="0">
           </div>
 
-          <div class="kpi">
-            <div class="t">ROE (ano)</div>
-            <div class="v" id="roe">—</div>
-            <div class="s"><span class="mono">dividendo anual ÷ valor cotas atuais</span></div>
+          <div class="field">
+            <label for="inv5Nome">Nome do novo investidor 5</label>
+            <input id="inv5Nome" type="text" value="">
           </div>
-
-          <div class="kpi">
-            <div class="t">Qtd motos futura</div>
-            <div class="v" id="motosFuturo">—</div>
-            <div class="s"><span class="mono">qtd × (1+CAGR)^anos</span></div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dividendos (mês) — futuro</div>
-            <div class="v good" id="dividendoMensalFuturo">—</div>
-            <div class="s"><span class="mono">dividendo anual futuro / 12</span></div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Dividendos (ano) — futuro</div>
-            <div class="v good" id="dividendoAnualFuturo">—</div>
-            <div class="s"><span class="mono">base_anual_futura × %div × %cotas</span></div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Valuation futuro</div>
-            <div class="v accent" id="valuationFuturo">—</div>
-            <div class="s"><span class="mono">base_anual_futura × múltiplo</span></div>
-          </div>
-
-          <div class="kpi">
-            <div class="t">Valor das cotas futuro</div>
-            <div class="v" id="cotasFuturo">—</div>
-            <div class="s"><span class="mono">valuation_futuro × %cotas</span></div>
+          <div class="field">
+            <label for="inv5Valor">Valor do investimento 5 (R$)</label>
+            <input id="inv5Valor" type="number" min="0" step="1000" value="0">
           </div>
         </div>
 
-        <div class="footer-note" id="alerta"></div>
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Total aportado na rodada</div>
+            <div class="v" id="kpiAporteTotal">—</div>
+            <div class="s mono">Σ investimentos</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Diluição total dos atuais</div>
+            <div class="v warn" id="kpiDiluicao">—</div>
+            <div class="s mono">1 − (pré / pós)</div>
+          </div>
+          <div class="kpi">
+            <div class="t">% vendido na rodada</div>
+            <div class="v warn" id="kpiPctVendido">—</div>
+            <div class="s mono">aporte / pós</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Preço implícito</div>
+            <div class="v" id="kpiPrecoImplicito">—</div>
+            <div class="s mono">pós-money / 100%</div>
+          </div>
+        </div>
       </section>
+
+      <!-- 4) CAP TABLE PROJETADO -->
+      <section class="card" id="secCapProj">
+        <h2>
+          4) Cap. Table Projetado
+          <span class="hint">% e valor das cotas (pós-rodada)</span>
+        </h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Participante</th>
+              <th class="right">% pós-rodada</th>
+              <th class="right">Valor das cotas (R$)</th>
+            </tr>
+          </thead>
+          <tbody id="capProjBody"></tbody>
+        </table>
+
+        <div class="note">
+          <span class="mono">pós-money = pré-money + aportes</span>. Novos: <span class="mono">investimento / pós</span>.
+          Atuais diluídos pró-rata: <span class="mono">(pré / pós)</span>.
+        </div>
+      </section>
+
+      <!-- 5) POLÍTICA DE DIVIDENDOS -->
+      <section class="card" id="secDividendos">
+        <h2>
+          5) Política de Dividendos
+          <span class="hint">Distribuição proporcional à participação</span>
+        </h2>
+
+        <div class="form">
+          <div class="field" style="grid-column: 1 / -1;">
+            <label for="pctDivMensal">% do lucro/EBITDA mensal distribuído</label>
+            <input id="pctDivMensal" type="number" min="0" max="100" step="0.01" value="20">
+          </div>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <div class="t">Dividendos totais/mês (hoje)</div>
+            <div class="v good" id="kpiDivMesHoje">—</div>
+            <div class="s mono">EBITDA_mensal × %mensal</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Dividendos totais/ano (hoje)</div>
+            <div class="v good" id="kpiDivAnoHoje">—</div>
+            <div class="s mono">(EBITDA_mensal × %mensal) × 12</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Payout anual equivalente</div>
+            <div class="v" id="kpiPayoutEquiv">—</div>
+            <div class="s mono">%mensal aplicado ao ano</div>
+          </div>
+          <div class="kpi">
+            <div class="t">Obs.</div>
+            <div class="v">EBITDA</div>
+            <div class="s">Proxy de “lucro distribuível” (simplificação)</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6) PROJEÇÕES FINANCEIRAS -->
+      <section class="card" id="secProjecoes">
+        <h2>
+          6) Projeções financeiras
+          <span class="hint">Retorno por participante (dividendos + valorização) em 1..5 anos</span>
+        </h2>
+
+        <div class="note">
+          Retorno acumulado até o ano <span class="mono">t</span>:
+          <span class="mono">Σ dividendos(1..t) + [valor_cotas(t) − valor_cotas(0)]</span>.
+          ROI: <span class="mono">retorno ÷ investimento</span> (apenas novos).
+        </div>
+
+        <div class="section-sep"></div>
+
+        <h2 style="margin-top:10px">
+          Resumo da empresa (1..5 anos)
+          <span class="hint">motos, dividendos distribuídos e valorização do valuation</span>
+        </h2>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Ano</th>
+              <th class="right">Qtd de motos</th>
+              <th class="right">Dividendos distribuídos</th>
+              <th class="right">Valorização das cotas (empresa)</th>
+            </tr>
+          </thead>
+          <tbody id="empresaResumoBody"></tbody>
+        </table>
+
+        <details open>
+          <summary>
+            <span>Retorno por participante (atuais + novos)</span>
+            <span class="hint">clique para recolher</span>
+          </summary>
+          <div class="details-body" id="projecoesWrap"></div>
+        </details>
+
+        <div class="note" id="alerta"></div>
+      </section>
+
     </div>
   </div>
 
   <div class="toast" id="toast">Copiado ✅</div>
 
   <script>
+    // ========= Dados fixos: Cap Table Atual =========
+    const CAP_ATUAL = [
+      { nome: "Gouveia SA", pct: 0.33 },
+      { nome: "Cenni SA",   pct: 0.33 },
+      { nome: "Casarini SA",pct: 0.17 },
+      { nome: "Cheni SA",   pct: 0.17 },
+    ];
+
+    // ========= Helpers =========
     const el = (id) => document.getElementById(id);
 
-    function fmtBRL(n){
-      if (!isFinite(n)) return "—";
-      return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
-    }
-    function fmtPctFromRatio(r){
-      if (!isFinite(r)) return "—";
-      return (r*100).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
-    }
     function clamp(v, min, max){
       if (!isFinite(v)) return min;
       return Math.min(Math.max(v, min), max);
@@ -363,144 +512,390 @@
       const n = parseFloat(v);
       return isFinite(n) ? n : fallback;
     }
-
-    // Como removemos o toggle, assumimos lucro por moto MENSAL.
-    function baseAnual(lucroMotoMensal, qtdMotos){
-      return lucroMotoMensal * qtdMotos * 12;
+    function fmtBRL(n){
+      if (!isFinite(n)) return "—";
+      return n.toLocaleString("pt-BR", { style:"currency", currency:"BRL" });
     }
-
-    function qtdMotosNoAno(qtdAtual, cagrAno, t){
-      return qtdAtual * Math.pow(1 + cagrAno, t);
+    function fmtPct(p){
+      if (!isFinite(p)) return "—";
+      return (p*100).toLocaleString("pt-BR", { minimumFractionDigits:2, maximumFractionDigits:2 }) + "%";
     }
-
-    function computeAtT(inputs, t){
-      const { pctCotas, qtdMotos, lucroMoto, cagr, multiplo, pctDividendos } = inputs;
-
-      const motos = qtdMotosNoAno(qtdMotos, cagr, t);
-      const base = baseAnual(lucroMoto, motos);
-
-      const dividendosAnuais = base * pctDividendos * pctCotas;
-      const dividendosMensais = dividendosAnuais / 12;
-
-      const valuation = base * multiplo;
-      const valorCotas = valuation * pctCotas;
-
-      return { motos, base, dividendosAnuais, dividendosMensais, valuation, valorCotas };
-    }
-
-    function readInputs(){
-      const pctCotas = clamp(toNumber(el("pctCotas").value, 0), 0, 100) / 100;
-      const qtdMotos = Math.max(parseInt(el("qtdMotos").value || 0, 10), 0);
-      const lucroMoto = Math.max(toNumber(el("lucroMoto").value, 0), 0); // mensal
-      const cagr = toNumber(el("cagr").value, 0) / 100; // CAGR de motos
-      const multiplo = Math.max(toNumber(el("multiplo").value, 0), 0);
-      const pctDividendos = clamp(toNumber(el("pctDividendos").value, 0), 0, 100) / 100;
-      const anos = Math.max(parseInt(el("anos").value || 1, 10), 1);
-
-      return { pctCotas, qtdMotos, lucroMoto, cagr, multiplo, pctDividendos, anos };
-    }
-
-    function calc(){
-      const inputs = readInputs();
-
-      const hoje = computeAtT(inputs, 0);
-      const futuro = computeAtT(inputs, inputs.anos);
-
-      // ROE = dividendos anuais / valor cotas atuais (hoje)
-      const roe = (hoje.valorCotas > 0) ? (hoje.dividendosAnuais / hoje.valorCotas) : NaN;
-
-      el("dividendoMensal").textContent = fmtBRL(hoje.dividendosMensais);
-      el("dividendoAnual").textContent = fmtBRL(hoje.dividendosAnuais);
-
-      el("valuation").textContent = fmtBRL(hoje.valuation);
-      el("cotasAtuais").textContent = fmtBRL(hoje.valorCotas);
-
-      el("roe").textContent = isFinite(roe) ? fmtPctFromRatio(roe) : "—";
-
-      el("motosFuturo").textContent = isFinite(futuro.motos) ? futuro.motos.toLocaleString("pt-BR", { maximumFractionDigits: 2 }) : "—";
-
-      el("dividendoMensalFuturo").textContent = fmtBRL(futuro.dividendosMensais);
-      el("dividendoAnualFuturo").textContent = fmtBRL(futuro.dividendosAnuais);
-
-      el("valuationFuturo").textContent = fmtBRL(futuro.valuation);
-      el("cotasFuturo").textContent = fmtBRL(futuro.valorCotas);
-
-      // Alertas simples
-      const avisos = [];
-      if (inputs.qtdMotos === 0) avisos.push("⚠️ Qtd de motos está 0; outputs ficam zerados.");
-      if (inputs.lucroMoto === 0) avisos.push("⚠️ Lucro por moto está 0; valuation/dividendos ficam zerados.");
-      if (inputs.multiplo === 0) avisos.push("⚠️ Múltiplo está 0; valuation fica 0.");
-      if (inputs.pctCotas === 0) avisos.push("ℹ️ % cotas está 0; participação e dividendos do sócio ficam 0.");
-      if (inputs.pctDividendos === 0) avisos.push("ℹ️ % dividendos está 0; projeções de dividendos ficam 0.");
-      if ((1 + inputs.cagr) <= 0) avisos.push("⚠️ CAGR <= -100% torna a projeção futura inválida.");
-
-      el("alerta").textContent = avisos.join(" ");
-    }
-
-    // Cenários (ajuste livre)
-    const scenarios = {
-      conservador: { cagr: 5, multiplo: 4.5, pctDividendos: 60 },
-      base:        { cagr: 15, multiplo: 6.0, pctDividendos: 50 },
-      agressivo:   { cagr: 30, multiplo: 7.5, pctDividendos: 40 }
-    };
-
     function showToast(msg){
       const t = el("toast");
       t.textContent = msg;
       t.classList.add("show");
       clearTimeout(showToast._timer);
-      showToast._timer = setTimeout(()=> t.classList.remove("show"), 1600);
+      showToast._timer = setTimeout(() => t.classList.remove("show"), 1600);
     }
 
-    function applyScenario(s){
-      el("cagr").value = s.cagr;
-      el("multiplo").value = s.multiplo;
-      el("pctDividendos").value = s.pctDividendos;
-      calc();
-      showToast(`Cenário aplicado: ${s.cagr}% CAGR`);
+    // ========= Cálculos base =========
+    // EBITDA por moto é MENSAL (R$/mês)
+    function ebitdaMensalTotal(motos, ebitdaMotoMensal){
+      return motos * ebitdaMotoMensal;
+    }
+    function ebitdaAnualTotal(motos, ebitdaMotoMensal){
+      return ebitdaMensalTotal(motos, ebitdaMotoMensal) * 12;
+    }
+    function motosNoAno(motos0, cagrAno, t){
+      return motos0 * Math.pow(1 + cagrAno, t);
+    }
+    function valuationNoAno(motos0, ebitdaMotoMensal, cagrAno, multiplo, t){
+      const motosT = motosNoAno(motos0, cagrAno, t);
+      const ebitdaAnual = ebitdaAnualTotal(motosT, ebitdaMotoMensal);
+      return ebitdaAnual * multiplo;
     }
 
-    function buildSummary(){
-      const inputs = readInputs();
+    function readInputs(){
+      const qtdMotos = Math.max(parseInt(el("qtdMotos").value || 0, 10), 0);
+      const ebitdaMoto = Math.max(toNumber(el("ebitdaMoto").value, 0), 0);
+      const multiplo = Math.max(toNumber(el("multiplo").value, 0), 0);
+      const cagr = toNumber(el("cagr").value, 0) / 100;
 
-      const hoje = computeAtT(inputs, 0);
-      const futuro = computeAtT(inputs, inputs.anos);
-      const roe = (hoje.valorCotas > 0) ? (hoje.dividendosAnuais / hoje.valorCotas) : NaN;
+      const pctDivMensal = clamp(toNumber(el("pctDivMensal").value, 0), 0, 100) / 100;
 
-      const pctCotasPct = (inputs.pctCotas*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
-      const pctDivPct = (inputs.pctDividendos*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
-      const cagrPct = (inputs.cagr*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2});
+      const investidores = [];
+      for (let i=1;i<=5;i++){
+        const nome = (el(`inv${i}Nome`).value || "").trim();
+        const valor = Math.max(toNumber(el(`inv${i}Valor`).value, 0), 0);
+        if (valor > 0){
+          investidores.push({
+            nome: nome.length ? nome : `Investidor ${i}`,
+            investimento: valor
+          });
+        }
+      }
 
-      const lines = [
-        "*Simulador para Investidores Motoleste*",
-        "",
-        `• % cotas: *${pctCotasPct}%*`,
-        `• Qtd motos (atual): *${inputs.qtdMotos}*`,
-        `• Lucro por moto (mensal): *${fmtBRL(inputs.lucroMoto)}*`,
-        `• CAGR motos: *${cagrPct}% a.a.*`,
-        `• Múltiplo: *${inputs.multiplo}x*`,
-        `• % dividendos: *${pctDivPct}%*`,
-        `• Horizonte: *${inputs.anos} anos*`,
-        "",
-        `*Hoje (Ano 0)*`,
-        `• Dividendos (mês): *${fmtBRL(hoje.dividendosMensais)}*`,
-        `• Dividendos (ano): *${fmtBRL(hoje.dividendosAnuais)}*`,
-        `• Valuation: *${fmtBRL(hoje.valuation)}*`,
-        `• Valor cotas atuais: *${fmtBRL(hoje.valorCotas)}*`,
-        `• ROE: *${isFinite(roe) ? fmtPctFromRatio(roe) : "—"}*`,
-        "",
-        `*Futuro (Ano ${inputs.anos})*`,
-        `• Qtd motos futura: *${futuro.motos.toLocaleString("pt-BR",{maximumFractionDigits:2})}*`,
-        `• Dividendos (mês): *${fmtBRL(futuro.dividendosMensais)}*`,
-        `• Dividendos (ano): *${fmtBRL(futuro.dividendosAnuais)}*`,
-        `• Valuation futuro: *${fmtBRL(futuro.valuation)}*`,
-        `• Valor cotas futuro: *${fmtBRL(futuro.valorCotas)}*`
-      ];
+      return { qtdMotos, ebitdaMoto, multiplo, cagr, pctDivMensal, investidores };
+    }
+
+    // ========= Cap tables =========
+    function computeRound(inputs){
+      const preMoney = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, 0);
+
+      const aporteTotal = inputs.investidores.reduce((s,x)=>s+x.investimento, 0);
+      const postMoney = preMoney + aporteTotal;
+
+      const fatorAntigos = (postMoney > 0) ? (preMoney / postMoney) : 0;
+
+      const capProjetado = [];
+
+      // atuais diluídos pró-rata
+      for (const s of CAP_ATUAL){
+        const pctPos = s.pct * fatorAntigos;
+        capProjetado.push({
+          tipo: "atual",
+          nome: s.nome,
+          pct: pctPos,
+          valor: postMoney * pctPos,
+          investimento: null
+        });
+      }
+
+      // novos investidores (equity total via post-money)
+      for (const inv of inputs.investidores){
+        const pctPos = (postMoney > 0) ? (inv.investimento / postMoney) : 0;
+        capProjetado.push({
+          tipo: "novo",
+          nome: inv.nome,
+          pct: pctPos,
+          valor: postMoney * pctPos,
+          investimento: inv.investimento
+        });
+      }
+
+      const somaPct = capProjetado.reduce((s,x)=>s+x.pct,0);
+
+      const diluicao = (postMoney > 0) ? (1 - (preMoney / postMoney)) : 0;
+      const pctVendido = (postMoney > 0) ? (aporteTotal / postMoney) : 0;
+
+      return { preMoney, postMoney, aporteTotal, fatorAntigos, capProjetado, somaPct, diluicao, pctVendido };
+    }
+
+    // ========= Dividendos =========
+    function dividendosMes(inputs, t){
+      // dividendos mensais do ano t (proxy): EBITDA_mensal(t) × %mensal
+      const motosT = motosNoAno(inputs.qtdMotos, inputs.cagr, t);
+      const ebitdaMes = ebitdaMensalTotal(motosT, inputs.ebitdaMoto);
+      return ebitdaMes * inputs.pctDivMensal;
+    }
+    function dividendosAno(inputs, t){
+      return dividendosMes(inputs, t) * 12;
+    }
+
+    // ========= Projeções por participante =========
+    function buildParticipantProjection(inputs, round, participant){
+      // participant: {tipo, nome, pct, investimento?}
+      const pct = participant.pct;
+      const inv = participant.investimento; // null para atuais
+      const isNovo = participant.tipo === "novo";
+
+      // Valor inicial das cotas no pós-money (t=0)
+      const val0Empresa = round.postMoney;
+      const val0 = val0Empresa * pct;
+
+      let divAcum = 0;
+      const rows = [];
+
+      for (let t=1;t<=5;t++){
+        const valTEmpresa = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, t);
+        const valT = valTEmpresa * pct;
+
+        const divAno = dividendosAno(inputs, t) * pct;
+        divAcum += divAno;
+
+        const valorizacao = valT - val0;
+        const retornoTotal = divAcum + valorizacao;
+        const roi = (isNovo && inv > 0) ? (retornoTotal / inv) : null;
+
+        rows.push({
+          ano: t,
+          motos: motosNoAno(inputs.qtdMotos, inputs.cagr, t),
+          divAcum,
+          valorizacao,
+          retornoTotal,
+          roi
+        });
+      }
+
+      return { ...participant, val0, rows };
+    }
+
+    // ========= Render =========
+    function renderCapProjetado(round){
+      const body = el("capProjBody");
+      body.innerHTML = "";
+
+      const ordered = [...round.capProjetado].sort((a,b)=>{
+        if (a.tipo !== b.tipo) return a.tipo === "atual" ? -1 : 1;
+        return b.pct - a.pct;
+      });
+
+      for (const p of ordered){
+        const tag = p.tipo === "novo"
+          ? `<span class="accent">(novo)</span>`
+          : `<span class="hint">(atual)</span>`;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${p.nome} ${tag}</td>
+          <td class="right">${fmtPct(p.pct)}</td>
+          <td class="right">${fmtBRL(p.valor)}</td>
+        `;
+        body.appendChild(tr);
+      }
+
+      const trSum = document.createElement("tr");
+      trSum.innerHTML = `
+        <td><b>Total</b></td>
+        <td class="right"><b>${fmtPct(round.somaPct)}</b></td>
+        <td class="right"><b>${fmtBRL(round.postMoney)}</b></td>
+      `;
+      body.appendChild(trSum);
+    }
+
+    function renderKpis(inputs, round){
+      const ebitdaMes = ebitdaMensalTotal(inputs.qtdMotos, inputs.ebitdaMoto);
+      const ebitdaAno = ebitdaAnualTotal(inputs.qtdMotos, inputs.ebitdaMoto);
+
+      el("kpiEbitdaMensal").textContent = fmtBRL(ebitdaMes);
+      el("kpiEbitdaAnual").textContent = fmtBRL(ebitdaAno);
+      el("kpiPreMoney").textContent = fmtBRL(round.preMoney);
+      el("kpiPostMoney").textContent = fmtBRL(round.postMoney);
+
+      el("kpiAporteTotal").textContent = fmtBRL(round.aporteTotal);
+      el("kpiDiluicao").textContent = fmtPct(round.diluicao);
+      el("kpiPctVendido").textContent = fmtPct(round.pctVendido);
+      el("kpiPrecoImplicito").textContent = round.postMoney > 0 ? fmtBRL(round.postMoney) : "—";
+
+      const divMesHoje = dividendosMes(inputs, 0);
+      const divAnoHoje = divMesHoje * 12;
+
+      el("kpiDivMesHoje").textContent = fmtBRL(divMesHoje);
+      el("kpiDivAnoHoje").textContent = fmtBRL(divAnoHoje);
+      el("kpiPayoutEquiv").textContent = fmtPct(inputs.pctDivMensal);
+    }
+
+    function renderEmpresaResumo(inputs, round){
+      const body = el("empresaResumoBody");
+      body.innerHTML = "";
+
+      const val0 = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, 0);
+
+      for (let t=1;t<=5;t++){
+        const motosT = motosNoAno(inputs.qtdMotos, inputs.cagr, t);
+        const divT = dividendosAno(inputs, t);
+        const valT = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, t);
+        const valz = valT - val0;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${t}</td>
+          <td class="right">${motosT.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}</td>
+          <td class="right">${fmtBRL(divT)}</td>
+          <td class="right">${fmtBRL(valz)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }
+
+    function renderProjecoes(inputs, round){
+      const wrap = el("projecoesWrap");
+      wrap.innerHTML = "";
+
+      const participants = [...round.capProjetado].sort((a,b)=>{
+        if (a.tipo !== b.tipo) return a.tipo === "atual" ? -1 : 1;
+        return b.pct - a.pct;
+      });
+
+      if (participants.length === 0){
+        wrap.innerHTML = `<div class="note warn">Sem participantes para projetar.</div>`;
+        return;
+      }
+
+      for (const p of participants){
+        const proj = buildParticipantProjection(inputs, round, p);
+
+        const box = document.createElement("div");
+        box.style.marginBottom = "14px";
+
+        const header = document.createElement("div");
+        header.className = "kpi";
+
+        const metaParts = [];
+        metaParts.push(`% pós-rodada: <b>${fmtPct(proj.pct)}</b>`);
+        metaParts.push(`Valor inicial das cotas: <b>${fmtBRL(proj.val0)}</b>`);
+        if (proj.tipo === "novo") metaParts.push(`Investimento: <b>${fmtBRL(proj.investimento)}</b>`);
+
+        const tag = proj.tipo === "novo"
+          ? `<span class="accent">(novo)</span>`
+          : `<span class="hint">(atual)</span>`;
+
+        header.innerHTML = `
+          <div class="t">Participante</div>
+          <div class="v">${proj.nome} ${tag}</div>
+          <div class="s">${metaParts.join(" &nbsp;|&nbsp; ")}</div>
+        `;
+        box.appendChild(header);
+
+        const table = document.createElement("table");
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Ano</th>
+              <th class="right">Qtd motos</th>
+              <th class="right">Dividendos acumulados</th>
+              <th class="right">Valorização das cotas</th>
+              <th class="right">Retorno total</th>
+              <th class="right">ROI total</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        `;
+
+        const tbody = table.querySelector("tbody");
+
+        for (const r of proj.rows){
+          const roiTxt = (proj.tipo === "novo" && r.roi !== null) ? fmtPct(r.roi) : "—";
+
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${r.ano}</td>
+            <td class="right">${r.motos.toLocaleString("pt-BR", { maximumFractionDigits: 2 })}</td>
+            <td class="right">${fmtBRL(r.divAcum)}</td>
+            <td class="right">${fmtBRL(r.valorizacao)}</td>
+            <td class="right"><b>${fmtBRL(r.retornoTotal)}</b></td>
+            <td class="right">${roiTxt}</td>
+          `;
+          tbody.appendChild(tr);
+        }
+
+        box.appendChild(table);
+        wrap.appendChild(box);
+      }
+    }
+
+    function renderAlerts(inputs, round){
+      const avisos = [];
+      const somaAtual = CAP_ATUAL.reduce((s,x)=>s+x.pct,0);
+      if (Math.abs(somaAtual - 1) > 1e-9) avisos.push("⚠️ Cap Table Atual não soma 100%.");
+
+      if (inputs.qtdMotos === 0) avisos.push("⚠️ Qtd de motos está 0; valuation/projeções ficam zerados.");
+      if (inputs.ebitdaMoto === 0) avisos.push("⚠️ EBITDA por moto está 0; valuation/projeções ficam zerados.");
+      if (inputs.multiplo === 0) avisos.push("⚠️ Múltiplo está 0; valuation fica 0.");
+      if ((1 + inputs.cagr) <= 0) avisos.push("⚠️ CAGR <= -100% torna a projeção inválida.");
+
+      if (round.preMoney <= 0) avisos.push("⚠️ Pré-money está 0; revise métricas.");
+      if (round.aporteTotal > 0 && round.postMoney <= 0) avisos.push("⚠️ Pós-money inválido.");
+      if (round.aporteTotal > 0 && round.pctVendido >= 1) avisos.push("⚠️ Aporte >= pós-money (implica ~100% para novos).");
+
+      if (Math.abs(round.somaPct - 1) > 0.0001) avisos.push("⚠️ Cap Table Projetado não soma ~100% (arredondamento/inputs).");
+
+      el("alerta").textContent = avisos.join(" ");
+    }
+
+    // ========= Copiar resumo =========
+    function buildSummary(inputs, round){
+      const lines = [];
+      lines.push("*Simulador para Investidores Motoleste*");
+      lines.push("");
+
+      lines.push("*Cap Table Atual*");
+      for (const s of CAP_ATUAL){
+        lines.push(`• ${s.nome}: *${fmtPct(s.pct)}*`);
+      }
+
+      lines.push("");
+      lines.push("*Métricas*");
+      const ebitdaAno = ebitdaAnualTotal(inputs.qtdMotos, inputs.ebitdaMoto);
+      lines.push(`• Motos: *${inputs.qtdMotos}*`);
+      lines.push(`• EBITDA/moto (mensal): *${fmtBRL(inputs.ebitdaMoto)}*`);
+      lines.push(`• EBITDA anual (hoje): *${fmtBRL(ebitdaAno)}*`);
+      lines.push(`• Múltiplo: *${inputs.multiplo}x*`);
+      lines.push(`• CAGR motos: *${(inputs.cagr*100).toLocaleString("pt-BR",{minimumFractionDigits:2, maximumFractionDigits:2})}% a.a.*`);
+      lines.push(`• Pré-money: *${fmtBRL(round.preMoney)}*`);
+
+      lines.push("");
+      lines.push("*Rodada*");
+      lines.push(`• Total aportado: *${fmtBRL(round.aporteTotal)}*`);
+      lines.push(`• Pós-money: *${fmtBRL(round.postMoney)}*`);
+      lines.push(`• % vendido: *${fmtPct(round.pctVendido)}*`);
+      lines.push(`• Diluição dos atuais: *${fmtPct(round.diluicao)}*`);
+
+      lines.push("");
+      lines.push("*Dividendos*");
+      lines.push(`• % mensal distribuído: *${fmtPct(inputs.pctDivMensal)}*`);
+      lines.push(`• Dividendos/ano (hoje): *${fmtBRL(dividendosAno(inputs,0))}*`);
+
+      lines.push("");
+      lines.push("*Resumo da empresa (Ano 5)*");
+      const val0 = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, 0);
+      const val5 = valuationNoAno(inputs.qtdMotos, inputs.ebitdaMoto, inputs.cagr, inputs.multiplo, 5);
+      lines.push(`• Motos (5): *${motosNoAno(inputs.qtdMotos, inputs.cagr, 5).toLocaleString("pt-BR",{maximumFractionDigits:2})}*`);
+      lines.push(`• Dividendos distribuídos (Ano 5): *${fmtBRL(dividendosAno(inputs,5))}*`);
+      lines.push(`• Valorização (empresa) 0→5: *${fmtBRL(val5 - val0)}*`);
+
+      lines.push("");
+      lines.push("*Retorno (participantes) — 5 anos*");
+      const participants = [...round.capProjetado].sort((a,b)=>{
+        if (a.tipo !== b.tipo) return a.tipo === "atual" ? -1 : 1;
+        return b.pct - a.pct;
+      });
+
+      for (const p of participants){
+        const proj = buildParticipantProjection(inputs, round, p);
+        const r5 = proj.rows[4];
+        const roiTxt = (p.tipo === "novo" && r5.roi !== null) ? ` (ROI: *${fmtPct(r5.roi)}*)` : "";
+        lines.push(`• ${p.nome} (${p.tipo === "novo" ? "novo" : "atual"}) — *${fmtBRL(r5.retornoTotal)}*${roiTxt}`);
+      }
+
       return lines.join("\n");
     }
 
     async function copySummary(){
-      const text = buildSummary();
+      const inputs = readInputs();
+      const round = computeRound(inputs);
+      const text = buildSummary(inputs, round);
+
       try{
         await navigator.clipboard.writeText(text);
         showToast("Copiado ✅");
@@ -515,20 +910,42 @@
       }
     }
 
-    // listeners
-    ["pctCotas","qtdMotos","lucroMoto","cagr","multiplo","pctDividendos","anos"].forEach(id=>{
-      el(id).addEventListener("input", calc);
-      el(id).addEventListener("change", calc);
-    });
+    // ========= Main =========
+    function calc(){
+      const inputs = readInputs();
+      const round = computeRound(inputs);
 
-    el("copyBtn").addEventListener("click", copySummary);
+      renderKpis(inputs, round);
+      renderCapProjetado(round);
+      renderEmpresaResumo(inputs, round);
+      renderProjecoes(inputs, round);
+      renderAlerts(inputs, round);
+    }
 
-    el("scConservador").addEventListener("click", ()=>applyScenario(scenarios.conservador));
-    el("scBase").addEventListener("click", ()=>applyScenario(scenarios.base));
-    el("scAgressivo").addEventListener("click", ()=>applyScenario(scenarios.agressivo));
+    function attachListeners(){
+      const ids = [
+        "qtdMotos","ebitdaMoto","multiplo","cagr",
+        "pctDivMensal",
+        "inv1Nome","inv1Valor",
+        "inv2Nome","inv2Valor",
+        "inv3Nome","inv3Valor",
+        "inv4Nome","inv4Valor",
+        "inv5Nome","inv5Valor"
+      ];
 
-    // init
+      ids.forEach(id=>{
+        const node = el(id);
+        if (!node) return;
+        node.addEventListener("input", calc);
+        node.addEventListener("change", calc);
+      });
+
+      el("copyBtn").addEventListener("click", copySummary);
+    }
+
+    attachListeners();
     calc();
   </script>
 </body>
 </html>
+
